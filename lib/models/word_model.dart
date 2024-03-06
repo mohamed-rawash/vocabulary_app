@@ -19,6 +19,19 @@ class WordModel {
     this.englishExamples = const [],
   });
 
+  WordModel decrementIndexAtDataBase() {
+    return WordModel(
+      indexAtDatabase: indexAtDatabase - 1,
+      text: text,
+      isArabic: isArabic,
+      colorCode: colorCode,
+      arabicSimilarWords: arabicSimilarWords,
+      englishSimilarWords: englishSimilarWords,
+      arabicExamples: arabicExamples,
+      englishExamples: englishExamples,
+    );
+  }
+
   WordModel addSimilarWord(
       {required String similarWord, required bool isArabicSimilarWord}) {
     List<String> newSimilarWord =
@@ -44,6 +57,18 @@ class WordModel {
     );
   }
 
+  WordModel deleteExample(int indexAtExamples, bool isArabicExample) {
+    List<String> newExamples = _intializeNewExamples(isArabicExample);
+    newExamples.removeAt(indexAtExamples);
+    return _getWordAfterCheckExamples(newExamples, isArabicExample);
+  }
+
+  WordModel addExample(String example, bool isArabicExample) {
+    List<String> newExamples = _intializeNewExamples(isArabicExample);
+    newExamples.add(example);
+    return _getWordAfterCheckExamples(newExamples, isArabicExample);
+  }
+
   List<String> _initializeNewSimilarWords({required bool isArabicSimilarWord}) {
     if (isArabicSimilarWord) {
       return List.from(arabicSimilarWords);
@@ -66,6 +91,27 @@ class WordModel {
           !isArabicSimilarWord ? newSimilarWord : englishSimilarWords,
       arabicExamples: arabicExamples,
       englishExamples: englishExamples,
+    );
+  }
+
+  List<String> _intializeNewExamples(bool isArabicExample) {
+    if (isArabicExample) {
+      return List.from(arabicExamples);
+    }
+    return List.from(englishExamples);
+  }
+
+  WordModel _getWordAfterCheckExamples(
+      List<String> newExamples, bool isArabicExample) {
+    return WordModel(
+      indexAtDatabase: indexAtDatabase,
+      text: text,
+      isArabic: isArabic,
+      colorCode: colorCode,
+      arabicSimilarWords: arabicSimilarWords,
+      englishSimilarWords: englishSimilarWords,
+      arabicExamples: isArabicExample ? newExamples : arabicExamples,
+      englishExamples: !isArabicExample ? newExamples : englishExamples,
     );
   }
 }
